@@ -1,0 +1,4 @@
+requests==2.31.0
+environs==10.3.0
+# Linter
+flake8==7.0.0
