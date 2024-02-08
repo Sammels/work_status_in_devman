@@ -1,29 +1,42 @@
 import pprint
+from time import sleep
+
 import requests
+from retry import retry
 from environs import Env
 
 
-def connect_to_devman_api(url: str, header: dict) -> str:
+@retry((requests.exceptions.ReadTimeout, ConnectionError), delay=30)
+def check_api_devman(token):
     """
-    Function use api-key for connect to Devman api
-    :return: json
+    :param token: str
+    :return: str
     """
+    url = "https://dvmn.org/api/long_polling/"
+
+    header = {
+        "Authorization": f"Token {token}"
+    }
     response = requests.get(url, headers=header)
-    response.raise_for_status()
-
-    return response.json()
-
-
-def long_pooling_devman(url, header):
-    response = requests.get(url, headers=header, timeout=90)
     response.raise_for_status()
     server_response = response.json()
 
-    server_timestamp = server_response['last_attempt_timestamp']
+    while True:
+        if server_response['status'] == 'found':
+            server_timestamp = server_response['last_attempt_timestamp']
+        else:
+            server_timestamp = server_response['timestamp_to_request']
 
-    params = {
-        'timestamp': int(server_timestamp),
-    }
+        params = {
+            'timestamp': int(server_timestamp),
+        }
+
+        response = requests.get(url, headers=header, params=params, timeout=90)
+
+        response.raise_for_status()
+        server_response = response.json()
+        pprint.pprint(server_response)
+        sleep(30)
 
     return pprint.pprint(params)
 
@@ -33,18 +46,8 @@ def main():
     env.read_env()
 
     token = env("TOKEN")
-    user_review_url = "https://dvmn.org/api/user_reviews/"
-    long_pooling_url = "https://dvmn.org/api/long_polling/"
 
-    header = {
-        "Authorization": f"Token {token}"
-    }
-
-    # works = connect_to_devman_api(user_review_url, token, header)
-    # pprint.pprint(works)
-
-    works = long_pooling_devman(long_pooling_url, header)
-    pprint.pprint(works)
+    works = check_api_devman(token)
 
 
 if __name__ == "__main__":
