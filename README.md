@@ -4,9 +4,14 @@
 
 ## Предустановки
 
+Telegram Bot Token: Вам также понадобится токен бота Telegram. Вы можете создать нового бота и получить токен, обратившись к [BotFather](https://t.me/BotFather) в Telegram.
+
+
 1. Создать `.env` файл и добавить в него
     ```text
-    TOKEN="Персональный токен ученика Devman"
+    DEVMAN_TOKEN=your_devman_api_token
+   TG_BOT_TOKEN=your_telegram_bot_token
+   CHAT_ID=your_telegram_chat_id
     ```
 2. Взять токен можно по ссылке [Api Devman](https://dvmn.org/api/docs/)
 3. Создать файл `requirements.txt` в корневой папке проекта, и добавить:
