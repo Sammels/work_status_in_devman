@@ -39,7 +39,7 @@ def check_reviews(token, params, bot, tg_chat_id):
             if current_review['is_negative']:
                 bot.send_message(chat_id=tg_chat_id,
                                  text=dedent(f"""
-                                 Работа проверена *"{current_review["lesson_title"]}"*\.
+                                 Преподаватель проверил работу! *"{current_review["lesson_title"]}"*\.
                                  Есть ошибки\.
                                  [Ссылка на работу]({current_review["lesson_url"]})
                                  """),
@@ -48,7 +48,7 @@ def check_reviews(token, params, bot, tg_chat_id):
             else:
                 bot.send_message(chat_id=tg_chat_id,
                                  text=dedent(f"""
-                                 Работа проверена *"{current_review["lesson_title"]}"*\.
+                                 Преподаватель проверил работу! *"{current_review["lesson_title"]}"*\.
                                  Все окей, делай дальше\.
                                  """),
                                  parse_mode=telegram.ParseMode.MARKDOWN_V2,
