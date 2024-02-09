@@ -4,10 +4,11 @@
 
 ## Предустановки
 
-Devman Token: Его можно получить по ссылке [Информация по Api Devman](https://dvmn.org/api/docs/).
-
+**Devman Token**: Его можно получить по ссылке [Информация по Api Devman](https://dvmn.org/api/docs/).
 **Telegram Bot Token**: Вам также понадобится токен бота Telegram. Вы можете создать нового бота и получить токен, обратившись к [BotFather](https://t.me/BotFather) в Telegram.
+**Chat ID**: Вам понадобится идентификатор чата Telegram, в котором вы хотите получать уведомления. Вы можете получить идентификатор чата, обратившись к [userinfobot](https://web.telegram.org/k/#@userinfobot).
 
+**Python Environment**: Убедитесь, что в вашей системе установлен Python.
 
 1. Создать `.env` файл и добавить в него
     ```text
@@ -26,3 +27,12 @@ Devman Token: Его можно получить по ссылке [Информ
     flake8==7.0.0
     ```
 
+
+## Запуск
+
+```bash
+python connectToApi.py
+```
+
+## Пример ответа бота.
+![img.png](img.png)
