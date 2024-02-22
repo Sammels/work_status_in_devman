@@ -1,4 +1,4 @@
-from time import sleep
+import time
 
 import requests
 import telegram
@@ -8,7 +8,7 @@ from retry import retry
 from environs import Env
 
 
-def check_api_devman(token):
+def connect_to_devman_api(token):
     """
     :param token: str
     :return: json
@@ -34,8 +34,8 @@ def check_reviews(token, params, bot, tg_chat_id):
     :return:
     """
     while True:
-        reviews = check_api_devman(token)
-        sleep(30)
+        reviews = connect_to_devman_api(token)
+        time.sleep(30)
 
         if reviews['status'] == 'timeout':
             server_timestamp = reviews['timestamp_to_request']
