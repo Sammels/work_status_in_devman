@@ -8,22 +8,20 @@ from retry import retry
 from environs import Env
 
 
-def connect_to_devman_api(token):
+def get_reviews(token):
     """
     :param token: str
     :return: json
     """
     url = "https://dvmn.org/api/long_polling/"
 
-    header = {
-        "Authorization": f"Token {token}"
-    }
+    header = {"Authorization": f"Token {token}"}
     response = requests.get(url, headers=header, timeout=20)
     response.raise_for_status()
     return response.json()
 
 
-@retry(requests.exceptions.ReadTimeout, delay=30)
+@retry(requests.exceptions.ConnectionError, delay=30)
 def check_reviews(token, params, bot, tg_chat_id):
     """
 
@@ -34,38 +32,48 @@ def check_reviews(token, params, bot, tg_chat_id):
     :return:
     """
     while True:
-        reviews = connect_to_devman_api(token)
-        time.sleep(30)
+        try:
+            reviews = get_reviews(token)
+        except requests.exceptions.ReadTimeout:
+            continue
 
-        if reviews['status'] == 'timeout':
-            server_timestamp = reviews['timestamp_to_request']
+        if reviews["status"] == "timeout":
+            server_timestamp = reviews["timestamp_to_request"]
             params = {
-                'timestamp': int(server_timestamp),
+                "timestamp": int(server_timestamp),
             }
         else:
-            current_review = reviews['new_attempts'][0]
-            if current_review['is_negative']:
-                bot.send_message(chat_id=tg_chat_id,
-                                 text=dedent(f"""
+            current_review = reviews["new_attempts"][0]
+            if current_review["is_negative"]:
+                bot.send_message(
+                    chat_id=tg_chat_id,
+                    text=dedent(
+                        f"""
                                             Преподаватель проверил работу! {current_review['lesson_title']},
                                             Есть ошибки.
                                             Ссылка на работу {current_review['lesson_url']}
-                                            """),)
+                                            """
+                    ),
+                )
             else:
-                bot.send_message(chat_id=tg_chat_id,
-                                 text=dedent(f"""
+                bot.send_message(
+                    chat_id=tg_chat_id,
+                    text=dedent(
+                        f"""
                                             Преподаватель проверил работу {current_review["lesson_title"]},
                                             Всё в порядкею
-                                            """))
+                                            """
+                    ),
+                )
 
 
 def main():
     env = Env()
     env.read_env()
 
-    devman_token = env.str('DEVMAN_TOKEN')
-    tg_bot_token = env('TG_BOT_TOKEN')
-    tg_chat_id = env('TG_CHAT_ID')
+    devman_token = env.str("DEVMAN_TOKEN")
+    tg_bot_token = env("TG_BOT_TOKEN")
+    tg_chat_id = env("TG_CHAT_ID")
     params = {}
     bot = telegram.Bot(token=tg_bot_token)
     check_reviews(devman_token, params, bot, tg_chat_id)
