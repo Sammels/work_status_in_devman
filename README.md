@@ -20,12 +20,13 @@
 2. Взять токен можно по ссылке [Api Devman](https://dvmn.org/api/docs/)
 3. Создать файл `requirements.txt` в корневой папке проекта, и добавить:
     ```text
-    # Work
     requests==2.31.0
     environs==10.3.0
+    python-telegram-bot==13
     
     # Linter
     flake8==7.0.0
+    retry~=0.9.2
     ```
    
 4. После того, как добавите библиотеки в `requirements.txt`, наберите в консоле 
