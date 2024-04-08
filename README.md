@@ -14,6 +14,7 @@
     ```text
    DEVMAN_TOKEN=your_devman_api_token
    TG_BOT_TOKEN=your_telegram_bot_token
+    TG_BOT_LOGGER_TOKEN=your_logger_telegramm_bot_token
    TG_CHAT_ID=your_telegram_chat_id
     ```
 2. Взять токен можно по ссылке [Api Devman](https://dvmn.org/api/docs/)
