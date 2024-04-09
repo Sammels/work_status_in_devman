@@ -1,4 +1,3 @@
-import time
 import logging
 import logging.handlers
 import requests
@@ -22,9 +21,10 @@ class BotHandler(logging.Handler):
     def emit(self, record):
         bot = telegram.Bot(token=self.tg_bot_logger_token)
         log_entry = self.format(record)
-        bot.send_message(chat_id=self.tg_chat_id,
-                         text=fr'{log_entry}',
-                         )
+        bot.send_message(
+            chat_id=self.tg_chat_id,
+            text=rf"{log_entry}",
+        )
 
 
 def get_reviews(token):
@@ -65,9 +65,9 @@ def check_reviews(token, params, bot, tg_chat_id, logger):
         else:
             current_review = reviews["new_attempts"][0]
             params = {
-                'timestamp': current_review['timestamp'],
+                "timestamp": current_review["timestamp"],
             }
-            new_timestamp = current_review['timestamp']
+            new_timestamp = current_review["timestamp"]
             if new_timestamp is last_timestamp:
                 continue
             if current_review["is_negative"]:
@@ -75,10 +75,10 @@ def check_reviews(token, params, bot, tg_chat_id, logger):
                     chat_id=tg_chat_id,
                     text=dedent(
                         f"""
-                                            Преподаватель проверил работу! {current_review['lesson_title']},
-                                            Есть ошибки.
-                                            Ссылка на работу {current_review['lesson_url']}
-                                            """
+                        Преподаватель проверил работу! {current_review['lesson_title']},
+                        Есть ошибки.
+                        Ссылка на работу {current_review['lesson_url']}
+                        """
                     ),
                 )
             else:
@@ -86,9 +86,9 @@ def check_reviews(token, params, bot, tg_chat_id, logger):
                     chat_id=tg_chat_id,
                     text=dedent(
                         f"""
-                                            Преподаватель проверил работу {current_review["lesson_title"]},
-                                            Всё в порядке.
-                                            """
+                        Преподаватель проверил работу {current_review["lesson_title"]},
+                        Всё в порядке.
+                        """
                     ),
                 )
             last_timestamp = new_timestamp
@@ -99,10 +99,11 @@ def config_logger(tg_bot_logger_token, tg_chat_id, logger):
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(filename)s:%(lineno)d - %(levelname)-8s - %(asctime)s - %(funcName)s - %(name)s - %(message)s',
+        format="%(filename)s:%(lineno)d - %(levelname)-8s - %(asctime)s - %(funcName)s - %(name)s - %(message)s",
     )
-    rotating_file_handler = logging.handlers.RotatingFileHandler(f'{BASE_DIR}/botlog.txt',
-                                                                 mode='w', maxBytes=200, backupCount=2)
+    rotating_file_handler = logging.handlers.RotatingFileHandler(
+        f"{BASE_DIR}/botlog.txt", mode="w", maxBytes=200, backupCount=2
+    )
 
     logger.addHandler(rotating_file_handler)
     logger.addHandler(BotHandler(tg_bot_logger_token, tg_chat_id))
@@ -111,10 +112,10 @@ def config_logger(tg_bot_logger_token, tg_chat_id, logger):
 def main():
     env = Env()
     env.read_env()
-    devman_token = env.str('DEVMAN_TOKEN')
-    tg_bot_token = env('TG_BOT_TOKEN')
-    tg_bot_logger_token = env('TG_BOT_LOGGER_TOKEN')
-    tg_chat_id = env('TG_CHAT_ID')
+    devman_token = env.str("DEVMAN_TOKEN")
+    tg_bot_token = env("TG_BOT_TOKEN")
+    tg_bot_logger_token = env("TG_BOT_LOGGER_TOKEN")
+    tg_chat_id = env("TG_CHAT_ID")
     params = {}
 
     config_logger(tg_bot_logger_token, tg_chat_id, logger)
