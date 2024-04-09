@@ -75,10 +75,10 @@ def check_reviews(token, params, bot, tg_chat_id, logger):
                     chat_id=tg_chat_id,
                     text=dedent(
                         f"""
-                                            Преподаватель проверил работу! {current_review['lesson_title']},
-                                            Есть ошибки.
-                                            Ссылка на работу {current_review['lesson_url']}
-                                            """
+                        Преподаватель проверил работу! {current_review['lesson_title']},
+                        Есть ошибки.
+                        Ссылка на работу {current_review['lesson_url']}
+                        """
                     ),
                 )
             else:
@@ -86,9 +86,9 @@ def check_reviews(token, params, bot, tg_chat_id, logger):
                     chat_id=tg_chat_id,
                     text=dedent(
                         f"""
-                                            Преподаватель проверил работу {current_review["lesson_title"]},
-                                            Всё в порядке.
-                                            """
+                        Преподаватель проверил работу {current_review["lesson_title"]},
+                        Всё в порядке.
+                        """
                     ),
                 )
             last_timestamp = new_timestamp
